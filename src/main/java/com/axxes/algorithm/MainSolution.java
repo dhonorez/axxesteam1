@@ -73,7 +73,7 @@ public class MainSolution {
     }
 
     private int calculateOneSaving(Cache cache, Endpoint endpoint, int popularity) {
-        return (endpoint.getLatencyEnd() - endpoint.getLatency().get(cache)) * popularity;
+        return (endpoint.getLatencyDataCenter() - endpoint.getLatencyToCache().get(cache)) * popularity;
     }
 
 
