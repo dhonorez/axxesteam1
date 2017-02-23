@@ -19,7 +19,7 @@ public class MainSolution {
         MainSolution mainSolution = new MainSolution();
         DatasetReader datasetReader = new DatasetReader();
         try {
-            datasetReader.readData(new File("src/main/resources/me_at_the_zoo.in"));
+            datasetReader.readData(new File("src/main/resources/kittens.in"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,15 +59,22 @@ public class MainSolution {
                 for (Endpoint endpoint : endPoints) {
                     final Integer requests = video.getPopularity().get(endpoint);
                     if (requests != null) {
+
+                        Integer bestCacheId = null;
+                        double bestLatencyToBeWonPerMB = Integer.MIN_VALUE;
                         for (Cache cache : caches) {
                             final Integer latencyToCache = endpoint.getLatencyToCache().get(cache.getId());
                             if (latencyToCache != null) { // IF CACHE IS REACHABLE
                                 final int latencyToBeWon = requests * (endpoint.getLatencyDataCenter() - latencyToCache);
                                 final double latencyToBeWonPerMB = ((double) latencyToBeWon) / video.getSize();
-                                steps.add(new Step(video.getId(), cache.getId(), latencyToBeWonPerMB));
-                                System.out.println("adding a new step");
+                                if (latencyToBeWonPerMB > bestLatencyToBeWonPerMB) {
+                                    bestCacheId = cache.getId();
+                                    bestLatencyToBeWonPerMB = latencyToBeWonPerMB;
+                                }
                             }
                         }
+                        System.out.println("adding a new step");
+                        steps.add(new Step(video.getId(), bestCacheId, bestLatencyToBeWonPerMB));
                     }
                 }
             }
