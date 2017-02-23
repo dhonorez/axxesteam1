@@ -10,7 +10,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
-@SpringBootApplication
 public class Hashcode2017Application {
 
 	public static void main(String[] args) throws IOException {
@@ -20,22 +19,13 @@ public class Hashcode2017Application {
 		datasetReader.readData(new ClassPathResource("me_at_the_zoo.in").getFile());
 
 		System.out.println("Caches:");
-		for (Cache cache : datasetReader.getCaches()) {
-			System.out.println(cache);
-		}
+		datasetReader.getCaches().forEach(System.out::println);
 
 		System.out.println("Endpoints:");
-		for (Endpoint endpoint : datasetReader.getEndpoints()) {
-			System.out.println(endpoint);
-		}
+		datasetReader.getEndpoints().forEach(System.out::println);
 
 		System.out.println("Videos:");
-		for (Video video : datasetReader.getVideos()) {
-			System.out.println(video);
-		}
-
-
-
+		datasetReader.getVideos().forEach(System.out::println);
 	}
 
 
