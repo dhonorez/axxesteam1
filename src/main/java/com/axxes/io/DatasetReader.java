@@ -60,6 +60,27 @@ public class DatasetReader {
             System.out.println("Reading endpoint " + i);
             lineCounter = readEndpoint(i, lines, lineCounter);
         }
+
+        for(int i =0; i < videos.size(); i ++) {
+            fillVideo(i, lines, lineCounter);
+            lineCounter++;
+        }
+    }
+
+    private void fillVideo(int entry, List<String> lines, int lineCounter) {
+        String line = lines.get(lineCounter);
+
+        int videoId = Integer.parseInt(line.split(" ")[0]);
+        int endPointId = Integer.parseInt(line.split(" ")[1]);
+        int nbRequests = Integer.parseInt(line.split(" ")[2]);
+
+        Video video = videos.get(videoId);
+        Map<Endpoint, Integer> popularity = video.getPopularity();
+        if(popularity == null) {
+            popularity = new HashMap<>();
+            video.setPopularity(popularity);
+        }
+        popularity.put(endpoints.get(endPointId), nbRequests);
     }
 
     private void createVideos(int numberOfVideos, String videoLine) {
@@ -81,14 +102,14 @@ public class DatasetReader {
 
     private int readEndpoint(int endpointId, List<String> lines, int lineCounter) {
         int line = lineCounter;
-        String endpointLine = lines.get(line);
+        String endpointLine = lines.get(line++);
         int latency = Integer.parseInt(endpointLine.split(" ")[0]);
-        int caches = Integer.parseInt(endpointLine.split(" ")[1]);
+        int nbCaches = Integer.parseInt(endpointLine.split(" ")[1]);
 
         System.out.println(latency +"/" + caches);
         Map<Cache, Integer> latencyMap = new HashMap<>();
 
-        for (int i = 0; i < caches; i++) {
+        for (int i = 0; i < nbCaches; i++) {
             readCacheLatencies(line++, lines, endpointId, latencyMap);
         }
 
@@ -98,7 +119,6 @@ public class DatasetReader {
     }
 
     private void readCacheLatencies(int i, List<String> lines, int endpointId, Map<Cache, Integer> latencyMap) {
-        int latencyLine = i;
         String line = lines.get(i);
         int cacheId = Integer.parseInt(line.split(" ")[0]);
         int latency = Integer.parseInt(line.split(" ")[1]);
