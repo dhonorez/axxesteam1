@@ -51,10 +51,10 @@ public class Initializer {
         return endpoints;
     }
 
-    private HashMap<Cache, Integer> createLatencyToCache(List<Cache> caches) {
-        HashMap<Cache, Integer> cacheIntegerHashMap = new HashMap<>();
+    private HashMap<Integer, Integer> createLatencyToCache(List<Cache> caches) {
+        HashMap<Integer, Integer> cacheIntegerHashMap = new HashMap<>();
         for(Cache cache: caches) {
-            cacheIntegerHashMap.put(cache, 20 * cache.getId());
+            cacheIntegerHashMap.put(cache.getId(), 20 * cache.getId());
         }
         return cacheIntegerHashMap;
     }

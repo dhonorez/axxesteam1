@@ -9,6 +9,6 @@ public class Endpoint {
 
     private final int id;
     private final int latencyDataCenter;
-    private final Map<Cache, Integer> latencyToCache;
+    private final Map<Integer, Integer> latencyToCache;
 
 }

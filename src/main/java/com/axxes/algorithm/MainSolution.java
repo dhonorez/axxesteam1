@@ -1,10 +1,15 @@
 package com.axxes.algorithm;
 
+import com.axxes.io.DatasetReader;
+import com.axxes.io.OutputWriter;
 import com.axxes.model.Cache;
 import com.axxes.model.Endpoint;
 import com.axxes.model.Video;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainSolution {
 
@@ -12,13 +17,77 @@ public class MainSolution {
 
     public static void main(String[] args) {
         MainSolution mainSolution = new MainSolution();
-
-        mainSolution.createSimpleSolution();
+        DatasetReader datasetReader = new DatasetReader();
+        try {
+            datasetReader.readData(new File("src/main/resources/me_at_the_zoo.in"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mainSolution.createSolution(datasetReader);
     }
 
     public MainSolution() {
         initializer = new Initializer();
         initializer.initializeData();
+    }
+
+    private void createSolution(DatasetReader datasetReader) {
+        final Collection<Cache> caches = datasetReader.getCaches();
+        final Collection<Video> videos = datasetReader.getVideos();
+        final Collection<Endpoint> endPoints = datasetReader.getEndpoints();
+
+        final List<Step> steps = createSteps(caches, videos, endPoints);
+        final List<Step> stepsSorted = sortSteps(steps);
+        System.out.println("STEPS SIZE: " + steps.size());
+        doSteps(stepsSorted, datasetReader);
+
+        long saving = calculateSavings(caches);
+        System.out.println(saving);
+
+        OutputWriter outputWriter = new OutputWriter();
+        try {
+            outputWriter.write(caches);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private List<Step> createSteps(Collection<Cache> caches, Collection<Video> videos, Collection<Endpoint> endPoints) {
+        List<Step> steps = new ArrayList<>();
+        for (Video video : videos) {
+            if (video.getPopularity() != null) {
+                for (Endpoint endpoint : endPoints) {
+                    final Integer requests = video.getPopularity().get(endpoint);
+                    if (requests != null) {
+                        for (Cache cache : caches) {
+                            final Integer latencyToCache = endpoint.getLatencyToCache().get(cache.getId());
+                            if (latencyToCache != null) { // IF CACHE IS REACHABLE
+                                final int latencyToBeWon = requests * (endpoint.getLatencyDataCenter() - latencyToCache);
+                                final double latencyToBeWonPerMB = ((double) latencyToBeWon) / video.getSize();
+                                steps.add(new Step(video.getId(), cache.getId(), latencyToBeWonPerMB));
+                                System.out.println("adding a new step");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return steps;
+    }
+
+    private List<Step> sortSteps(List<Step> steps) {
+        return steps.stream().sorted().collect(Collectors.toList());
+    }
+
+    private void doSteps(List<Step> stepsSorted, DatasetReader datasetReader) {
+        for (Step step : stepsSorted) {
+            Cache cache = datasetReader.getCache(step.getCacheId());
+            Video video = datasetReader.getVideo(step.getVideoId());
+            if (cache.canAddVideo(video.getSize())) {
+                System.out.println("Adding video " + video.getId() + " to cache " + cache.getId());
+                cache.addVideo(video);
+            }
+        }
     }
 
     private void createSimpleSolution() {
@@ -58,7 +127,7 @@ public class MainSolution {
         return caches;
     }
 
-    private long calculateSavings(List<Cache> caches) {
+    private long calculateSavings(Collection<Cache> caches) {
         long savings = 0;
         for(Cache cache: caches) {
             Set<Video> videos = cache.getVideos();
@@ -73,7 +142,10 @@ public class MainSolution {
     }
 
     private int calculateOneSaving(Cache cache, Endpoint endpoint, int popularity) {
-        return (endpoint.getLatencyDataCenter() - endpoint.getLatencyToCache().get(cache)) * popularity;
+        final Integer latencyToCache = endpoint.getLatencyToCache().get(cache.getId());
+        if (latencyToCache == null)
+            return 0;
+        return (endpoint.getLatencyDataCenter() - latencyToCache) * popularity;
     }
 
 

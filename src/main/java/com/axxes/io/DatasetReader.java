@@ -23,6 +23,14 @@ public class DatasetReader {
         return videos.values();
     }
 
+    public Video getVideo(int videoId) {
+        return videos.get(videoId);
+    }
+
+    public Cache getCache(int cacheId) {
+        return caches.get(cacheId);
+    }
+
     public Collection<Cache> getCaches() {
         return caches.values();
     }
@@ -107,7 +115,7 @@ public class DatasetReader {
         int nbCaches = Integer.parseInt(endpointLine.split(" ")[1]);
 
         System.out.println(latency + "/" + caches);
-        Map<Cache, Integer> latencyMap = new HashMap<>();
+        Map<Integer, Integer> latencyMap = new HashMap<>();
 
         for (int i = 0; i < nbCaches; i++) {
             readCacheLatencies(line++, lines, endpointId, latencyMap);
@@ -118,11 +126,11 @@ public class DatasetReader {
         return line;
     }
 
-    private void readCacheLatencies(int i, List<String> lines, int endpointId, Map<Cache, Integer> latencyMap) {
+    private void readCacheLatencies(int i, List<String> lines, int endpointId, Map<Integer, Integer> latencyMap) {
         String line = lines.get(i);
         int cacheId = Integer.parseInt(line.split(" ")[0]);
         int latency = Integer.parseInt(line.split(" ")[1]);
-        latencyMap.put(caches.get(cacheId), latency);
+        latencyMap.put(cacheId, latency);
     }
 
 }
