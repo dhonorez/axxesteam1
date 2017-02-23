@@ -14,9 +14,15 @@ import java.util.Set;
 public class Calculator {
 
     private Set<Videoset> videosets = new HashSet<>();
-    Set<Cache> cacheSet;
-    Set<Endpoint> endpoints;
-    Set<Video> videos;
+    private final Set<Cache> cacheSet;
+    private final Set<Endpoint> endpoints;
+    private final Set<Video> videos;
+
+    public Calculator(Set<Cache> cacheSet, Set<Endpoint> endpoints, Set<Video> videos) {
+        this.cacheSet = cacheSet;
+        this.endpoints = endpoints;
+        this.videos = videos;
+    }
 
     public void calculate() {
         Cache cache = cacheSet.iterator().next();
