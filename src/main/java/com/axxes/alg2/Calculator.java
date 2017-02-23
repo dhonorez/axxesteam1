@@ -38,7 +38,7 @@ public class Calculator {
             for (Videoset set : videosets) {
                 if (set.getVideos().contains(v)) {
                     for (Endpoint endpoint : v.getPopularity().keySet()) {
-                        set.addScore((endpoint.getLatencyDataCenter() - endpoint.getLatencyToCache().get(cache)) * v.getPopularity().get(endpoint);
+                        set.addScore((endpoint.getLatencyDataCenter() - endpoint.getLatencyToCache().get(cache)) * v.getPopularity().get(endpoint));
                     }
                 }
             }
