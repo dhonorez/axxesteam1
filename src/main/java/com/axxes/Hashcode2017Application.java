@@ -10,7 +10,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
-@SpringBootApplication
 public class Hashcode2017Application {
 
 	public static void main(String[] args) throws IOException {
