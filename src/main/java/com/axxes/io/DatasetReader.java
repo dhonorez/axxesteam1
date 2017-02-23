@@ -4,13 +4,14 @@ import com.axxes.model.Cache;
 import com.axxes.model.Endpoint;
 import com.axxes.model.Video;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DatasetReader {
 
@@ -35,7 +36,6 @@ public class DatasetReader {
         int lineCounter = 0;
 
 
-
         String firstLine = lines.get(lineCounter++);
         System.out.println(firstLine);
         int numberOfVideos = Integer.parseInt(firstLine.split(" ")[0]);
@@ -56,12 +56,12 @@ public class DatasetReader {
         createCaches(numberOfCaches, cacheSize);
 
 
-        for (int i=0; i<endpoints; i++) {
+        for (int i = 0; i < endpoints; i++) {
             System.out.println("Reading endpoint " + i);
             lineCounter = readEndpoint(i, lines, lineCounter);
         }
 
-        for(int i =0; i < videos.size(); i ++) {
+        for (int i = 0; i < videos.size(); i++) {
             fillVideo(i, lines, lineCounter);
             lineCounter++;
         }
@@ -76,7 +76,7 @@ public class DatasetReader {
 
         Video video = videos.get(videoId);
         Map<Endpoint, Integer> popularity = video.getPopularity();
-        if(popularity == null) {
+        if (popularity == null) {
             popularity = new HashMap<>();
             video.setPopularity(popularity);
         }
@@ -85,7 +85,7 @@ public class DatasetReader {
 
     private void createVideos(int numberOfVideos, String videoLine) {
         String[] sizes = videoLine.split(" ");
-        for (int i = 0; i<numberOfVideos; i++) {
+        for (int i = 0; i < numberOfVideos; i++) {
             Video v = new Video(i, Integer.parseInt(sizes[i]));
             videos.put(i, v);
             //System.out.println("Added video " + v);
@@ -93,7 +93,7 @@ public class DatasetReader {
     }
 
     private void createCaches(int numberOfCaches, int cacheSize) {
-        for (int i = 0; i< numberOfCaches; i++) {
+        for (int i = 0; i < numberOfCaches; i++) {
             Cache cache = new Cache(i, cacheSize);
             caches.put(i, cache);
             //System.out.println("Added cache " + cache);
@@ -106,7 +106,7 @@ public class DatasetReader {
         int latency = Integer.parseInt(endpointLine.split(" ")[0]);
         int nbCaches = Integer.parseInt(endpointLine.split(" ")[1]);
 
-        System.out.println(latency +"/" + caches);
+        System.out.println(latency + "/" + caches);
         Map<Cache, Integer> latencyMap = new HashMap<>();
 
         for (int i = 0; i < nbCaches; i++) {
