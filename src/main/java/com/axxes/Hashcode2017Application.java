@@ -9,4 +9,7 @@ public class Hashcode2017Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Hashcode2017Application.class, args);
 	}
+
+
+
 }
