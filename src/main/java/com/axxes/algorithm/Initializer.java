@@ -30,9 +30,6 @@ public class Initializer {
     private List<Video> createVideos(List<Endpoint> endPoints) {
         List<Video> videos = new ArrayList<>();
         HashMap<Endpoint, Integer> endpointMap = createEndpointMap(endPoints);
-        videos.add(new Video(1, 10, endpointMap));
-        videos.add(new Video(2, 15, endpointMap));
-        videos.add(new Video(3, 20, endpointMap));
         return videos;
     }
 
