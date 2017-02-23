@@ -26,12 +26,36 @@ public class Calculator {
 
     public void calculate() {
         Cache cache = cacheSet.iterator().next();
-        calculateVideoSets(cache, videos);
+
+        Set<Video> optimized = createOptimized(videos);
+        System.out.println("optimized videos: " + optimized.size());
+
+        calculateVideoSets(cache, optimized);
 
         System.out.println("Calculated videosets: " + videosets.size());
-        calculateScores(cache, endpoints, videos);
+        calculateScores(cache, endpoints, optimized);
 
         getHighestScore(cache);
+    }
+
+    private Set<Video> createOptimized(Set<Video> videos) {
+        //videos.stream()
+          //      .filter(v -> v.getPopularity()!= null )
+            //    .sorted((v1, v2) -> Comparator.comparingInt())
+
+
+        Set<Video> optimized = new HashSet<>();
+        for (Video video : videos) {
+            if (video.getPopularity() != null && !video.getPopularity().isEmpty()) {
+                optimized.add(video);
+            }
+            if (optimized.size() == 10) {
+                break;
+            }
+        }
+
+        return optimized;
+
     }
 
     private void getHighestScore(Cache cache) {
@@ -53,29 +77,32 @@ public class Calculator {
 
     private void calculateVideoSets(Cache cache, Set<Video> videos) {
         for (Video v : videos) {
+            System.out.println("Calculating for video " + v.getId() + " / " + videos.size() + " left");
             Videoset videoset = new Videoset();
+            videoset.setMaxSize(cache.getSize());
 
             if (videoset.canAddVideo(v)) {
                 videoset.addVideo(v);
+                videosets.add(videoset);
                 Set<Video> clone = new HashSet<>(videos);
                 clone.remove(v);
                 calculateForVideoSet(videoset, clone);
-            } else {
-                videosets.add(videoset);
             }
         }
     }
 
     private void calculateForVideoSet(Videoset previous, Set<Video> videos) {
         for (Video v : videos) {
+            System.out.println("Adding video " + v.getId() + " / " + videos.size() + " left");
             Videoset videoset = new Videoset(previous);
             if (videoset.canAddVideo(v)) {
                 videoset.addVideo(v);
+                videosets.add(videoset);
                 Set<Video> clone = new HashSet<>(videos);
                 clone.remove(v);
                 calculateForVideoSet(videoset, clone);
             } else {
-                videosets.add(videoset);
+                System.out.println("SET FULL" + videoset.getVideos().size());
             }
         }
     }

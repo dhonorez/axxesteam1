@@ -40,4 +40,12 @@ public class Videoset {
         this.score += ms;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Videoset) {
+            return ((Videoset)other).getVideos().equals(this.getVideos());
+        }
+        return false;
+    }
+
 }
