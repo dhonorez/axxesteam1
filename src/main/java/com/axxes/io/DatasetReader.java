@@ -8,10 +8,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DatasetReader {
 
@@ -19,16 +16,16 @@ public class DatasetReader {
     private Map<Integer, Cache> caches = new HashMap<>();
     private Map<Integer, Endpoint> endpoints = new HashMap<>();
 
-    public Collection<Video> getVideos() {
-        return videos.values();
+    public Set<Video> getVideos() {
+        return new HashSet<>(videos.values());
     }
 
-    public Collection<Cache> getCaches() {
-        return caches.values();
+    public Set<Cache> getCaches() {
+        return new HashSet<>(caches.values());
     }
 
-    public Collection<Endpoint> getEndpoints() {
-        return endpoints.values();
+    public Set<Endpoint> getEndpoints() {
+        return new HashSet<>(endpoints.values());
     }
 
     public void readData(File file) throws IOException {

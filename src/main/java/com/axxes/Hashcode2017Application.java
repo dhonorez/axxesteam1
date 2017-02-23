@@ -1,5 +1,6 @@
 package com.axxes;
 
+import com.axxes.alg2.Calculator;
 import com.axxes.io.DatasetReader;
 
 import java.io.File;
@@ -12,7 +13,7 @@ public class Hashcode2017Application {
         DatasetReader datasetReader = new DatasetReader();
         datasetReader.readData(new File("src/main/resources/me_at_the_zoo.in"));
 
-
+        new Calculator(datasetReader.getCaches(), datasetReader.getEndpoints(), datasetReader.getVideos()).calculate();
     }
 
 
